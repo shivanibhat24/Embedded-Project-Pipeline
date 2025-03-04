@@ -15,9 +15,6 @@
 
 This project implements an advanced unsupervised deep learning pipeline for detecting zero-day exploits in network traffic. Using the UNSW-NB15 dataset, our solution combines **Variational Autoencoders (VAE)** with clustering techniques to identify anomalous network behavior that could indicate previously unknown vulnerabilities.
 
-<p align="center">
-  <img src="Visuals/tsne_visualization.png" alt="Visualization of Anomaly Detection" width="600"/>
-</p>
 
 ### Why Zero-Day Detection Matters
 
