@@ -135,9 +135,6 @@ Latent Representations → Clustering Algorithms → Anomaly Groups and Insights
 
 ## 🔄 Usage Guide
 
-<p align="center">
-  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMG10MGJ1cm1wam43amR4cjg2aXNyOTlydXlkb2M0OTQyOGwzZTRwYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l46CyJmS9KUbID7tK/giphy.gif" alt="Usage Animation" width="400"/>
-</p>
 
 ### Training a New Model
 
@@ -235,9 +232,6 @@ dbscan_labels = dbscan.fit_predict(latent_representations)
 
 ## 🔮 Future Improvements
 
-<p align="center">
-  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZTAycXhhMnVrZ2hxMno2dXQxbWdrcTF3aHMwZXI1a3JxMHhrNnk4NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KK6stQSoFWGfgdffGu/giphy.gif" alt="Future Vision" width="450"/>
-</p>
 
 - **Advanced Architectures**: Implement convolutional VAEs for better feature extraction
 - **Real-time Detection**: Develop streaming data processing capabilities
