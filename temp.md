@@ -5,6 +5,10 @@
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-2.12.0-orange)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
+<p align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjA3MzAyMGlwNHZ0ZDNlcjF1dWw1eGhha2swdjEzMTBpejAyMWc1YiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oKIPEqDGUULpEU0aQ/giphy.gif" alt="Cybersecurity Animation" width="600"/>
+</p>
+
 > *Developed by Team AI_Mavericks: Komal Sali, Parvati Pole, Shivani Bhat, Ibrahim*
 
 ## 🛡️ Project Overview
@@ -19,15 +23,27 @@ This project implements an advanced unsupervised deep learning pipeline for dete
 
 Zero-day exploits represent one of the most critical threats in cybersecurity as they target previously unknown vulnerabilities that bypass traditional defense mechanisms. Our solution learns normal system behavior patterns and flags deviations that could indicate these emerging threats.
 
+<p align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbzFma2szbWxxb24xdGRhcHl1bGI3MnV2a2dmbHpvdG0yYjcwajZnciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/077i6AULCXc0FKTj9s/giphy.gif" alt="Network Security Visualization" width="400"/>
+</p>
+
 ## 🔍 Key Components
 
 ### 1. Unsupervised Learning Architecture
 - **Variational Autoencoders (VAE)** learn compact, latent representations of normal system behavior
 - **Reconstruction Error Analysis** identifies anomalies where behavior deviates from the learned norm
 
+<p align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHZscjBtMDRpZDk3YWpiaW82aGV0azh1Z2R2anlqZ2FyMHlvNmtpciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o6Zt5TtQPa0Db1YJ2/giphy.gif" alt="Autoencoder Animation" width="350"/>
+</p>
+
 ### 2. Advanced Anomaly Detection
 - **K-means and DBSCAN clustering** on latent space representations group similar patterns and highlight outliers
 - **Dynamic threshold setting** based on statistical analysis of reconstruction errors
+
+<div align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWhoNm8ycG9iemY2Mm5xNTBidmY0cW1oMXZraXR2dmUxZW5icnV0ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l46Cy1rHbQ92uuLXa/giphy.gif" alt="Clustering Animation" width="350"/>
+</div>
 
 ### 3. Robust Data Processing
 - **Preprocessing pipeline** cleans and normalizes high-dimensional network data
@@ -37,12 +53,20 @@ Zero-day exploits represent one of the most critical threats in cybersecurity as
 
 The solution leverages the **UNSW-NB15 dataset**, a comprehensive collection designed for network intrusion detection research. It contains a diverse mixture of benign and malicious network traffic that simulates real-world cyber attack scenarios.
 
+<p align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaXRtNmljbnNsaTVkYXNsNzdxYzVpMnZtbXZrN3cwcWQzbGt4OXJlYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oKIPEqDGUULpEU0aQ/giphy.gif" alt="Data Processing" width="450"/>
+</p>
+
 ## 🚀 How It Works
 
 ### 1. Data Preprocessing
 ```
 Raw Network Data → Feature Encoding → Normalization → Training Data
 ```
+
+<p align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb2lwb3dhMHd6M2VwNnVsbGJjaGJpNzVsYzR5djJ5YnNoMndiOXhldCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26tn33aiTi1jkl6H6/giphy.gif" alt="Data Processing Animation" width="400"/>
+</p>
 
 - Categorical features undergo one-hot encoding
 - Numerical features are standardized
@@ -53,6 +77,10 @@ Raw Network Data → Feature Encoding → Normalization → Training Data
 Input → Encoder → Latent Space → Decoder → Reconstruction
 ```
 
+<p align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNGZ5ZmJsZTIzMHF5cmVxdXRxYzR5M3FkcmZlcDBod3EyZ2R3bXRxdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT9IgzoKnwFNmISR8I/giphy.gif" alt="VAE Architecture Animation" width="500"/>
+</p>
+
 - Learns to compress and reconstruct normal network traffic patterns
 - Creates a meaningful latent space representation of the data
 
@@ -61,6 +89,10 @@ Input → Encoder → Latent Space → Decoder → Reconstruction
 New Data → VAE → Calculate Reconstruction Error → Compare to Threshold → Flag Anomalies
 ```
 
+<p align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnJ2c3FmcnJnbXA0d3M0M3A1a3U1NWF2enAzbXNvM3U0ZnN6a3pmZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7btNa0RUYa5lEeuk/giphy.gif" alt="Anomaly Detection Animation" width="400"/>
+</p>
+
 - Sets a statistical threshold based on the distribution of reconstruction errors
 - Flags samples with reconstruction errors above the threshold as potential zero-day exploits
 
@@ -68,6 +100,10 @@ New Data → VAE → Calculate Reconstruction Error → Compare to Threshold →
 ```
 Latent Representations → Clustering Algorithms → Anomaly Groups and Insights
 ```
+
+<p align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMmc2emlwYW41NnFscnM2NDYxOGxjODVyeXc3OHh5NmR6MG9sbXFyYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l46CuOhTeU2X8vFWE/giphy.gif" alt="Clustering Animation" width="400"/>
+</p>
 
 - Applies K-means and DBSCAN clustering to reveal data structure
 - Provides deeper insights into potential anomaly groups
@@ -79,15 +115,15 @@ Our model generates several insightful visualizations:
 <div style="display: flex; justify-content: space-between;">
   <div style="flex: 1; padding: 5px;">
     <p align="center"><strong>Reconstruction Error Distribution</strong></p>
-    <p align="center"><img src="Visuals/reconstruction_error.png" alt="Reconstruction Error" width="300"/></p>
+    <p align="center"><img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExenFoZXhrYjMwdTEzZDdvZmQ0YXRyYjE0dHc0OTc2N2VubWgwdXE4YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3og0IFrHkIglEOg8Ba/giphy.gif" alt="Reconstruction Error" width="300"/></p>
   </div>
   <div style="flex: 1; padding: 5px;">
     <p align="center"><strong>Anomaly Scores</strong></p>
-    <p align="center"><img src="Visuals/anomaly_scores.png" alt="Anomaly Scores" width="300"/></p>
+    <p align="center"><img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdnAwNnVqZ3pnaWw1a25zbjZyeWFqMTJjb2RheGhydnV3eWl6YmNjcCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3og0ILLVvPp8d64Jd6/giphy.gif" alt="Anomaly Scores" width="300"/></p>
   </div>
   <div style="flex: 1; padding: 5px;">
     <p align="center"><strong>ROC Curve</strong></p>
-    <p align="center"><img src="Visuals/roc_curve.png" alt="ROC Curve" width="300"/></p>
+    <p align="center"><img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXIwN3ZkcmkxaG81aTN5MDBzMTRyajFrcHhyamFsYzhhMHMwajFnNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7bu3XilJ5BOiSGic/giphy.gif" alt="ROC Curve" width="300"/></p>
   </div>
 </div>
 
@@ -97,6 +133,10 @@ Our model generates several insightful visualizations:
 
 - Python 3.8+
 - Virtual environment tool (recommended)
+
+<p align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2drMGduN2tmMXN6Y3gxem55bWlkbmh0NGNyM2JnY242cWRwMXo5dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1afuwyOsr5E8X9CuRV/giphy.gif" alt="Installation Animation" width="400"/>
+</p>
 
 ### Quick Start
 
@@ -128,6 +168,10 @@ Our model generates several insightful visualizations:
    ```
 
 ## 🔄 Usage Guide
+
+<p align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMG10MGJ1cm1wam43amR4cjg2aXNyOTlydXlkb2M0OTQyOGwzZTRwYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l46CyJmS9KUbID7tK/giphy.gif" alt="Usage Animation" width="400"/>
+</p>
 
 ### Training a New Model
 
@@ -170,9 +214,17 @@ zero-day-detection/
 └── Visuals/                  # Visualization outputs
 ```
 
+<p align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExeTAxdWl5ejMyZHY2c2lzdHcwb2RvaGFpeXoxOTY5aGJqc2FqY2dodSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/pOEbLRT4SwD35IELiQ/giphy.gif" alt="Project Structure" width="400"/>
+</p>
+
 ## 🔬 Technical Deep Dive
 
 ### Variational Autoencoder Architecture
+
+<p align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdjJuM3dsbjQwb2U2M2lqMmx6bTg0OGY0M25rZWJ3Z3Q1OWwxeGNrZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/LmNwrBhejkK9EFP504/giphy.gif" alt="VAE Explained" width="450"/>
+</p>
 
 Our VAE implementation consists of:
 
@@ -199,6 +251,10 @@ The VAE is trained to minimize:
 
 ### Clustering Implementation
 
+<p align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExeHZ5OTJ2eWRnM3Q3aGNxZWJ5Z2ttNzgyZTFncWNsYWIxYTF2cmRnaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o6ZtaO9BZHcOjmErm/giphy.gif" alt="Clustering Explained" width="400"/>
+</p>
+
 We employ two complementary clustering algorithms:
 
 ```python
@@ -213,27 +269,18 @@ dbscan_labels = dbscan.fit_predict(latent_representations)
 
 ## 🔮 Future Improvements
 
+<p align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZTAycXhhMnVrZ2hxMno2dXQxbWdrcTF3aHMwZXI1a3JxMHhrNnk4NyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KK6stQSoFWGfgdffGu/giphy.gif" alt="Future Vision" width="450"/>
+</p>
+
 - **Advanced Architectures**: Implement convolutional VAEs for better feature extraction
 - **Real-time Detection**: Develop streaming data processing capabilities
 - **Ensemble Methods**: Combine multiple anomaly detection techniques for greater accuracy
 - **Explainability**: Add tools to interpret why specific traffic is flagged as anomalous
 - **Adversarial Training**: Enhance robustness against evasion attempts
 
-## 📜 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🙏 Acknowledgments
-
-- The UNSW-NB15 dataset creators for providing valuable cybersecurity research data
-- The open-source community for TensorFlow, scikit-learn, and other tools
-
-## 📞 Contact
-
-Team AI_Mavericks - [ai.mavericks@example.com](mailto:ai.mavericks@example.com)
-
----
-
 <p align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExODBpOW8zcjF3NWx3aXZkanBrNjJibTR6Nml6MHlndHgwM3N5MHV0MCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o6Zt8qDiPE2d3kayI/giphy.gif" alt="Security Animation" width="150"/>
+  <br>
   <strong>Protecting networks from the unknown, one anomaly at a time.</strong>
 </p>
