@@ -33,10 +33,6 @@ Zero-day exploits represent one of the most critical threats in cybersecurity as
 - **Variational Autoencoders (VAE)** learn compact, latent representations of normal system behavior
 - **Reconstruction Error Analysis** identifies anomalies where behavior deviates from the learned norm
 
-<p align="center">
-  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMHZscjBtMDRpZDk3YWpiaW82aGV0azh1Z2R2anlqZ2FyMHlvNmtpciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o6Zt5TtQPa0Db1YJ2/giphy.gif" alt="Autoencoder Animation" width="350"/>
-</p>
-
 ### 2. Advanced Anomaly Detection
 - **K-means and DBSCAN clustering** on latent space representations group similar patterns and highlight outliers
 - **Dynamic threshold setting** based on statistical analysis of reconstruction errors
