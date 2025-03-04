@@ -85,10 +85,6 @@ Input → Encoder → Latent Space → Decoder → Reconstruction
 New Data → VAE → Calculate Reconstruction Error → Compare to Threshold → Flag Anomalies
 ```
 
-<p align="center">
-  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnJ2c3FmcnJnbXA0d3M0M3A1a3U1NWF2enAzbXNvM3U0ZnN6a3pmZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7btNa0RUYa5lEeuk/giphy.gif" alt="Anomaly Detection Animation" width="400"/>
-</p>
-
 - Sets a statistical threshold based on the distribution of reconstruction errors
 - Flags samples with reconstruction errors above the threshold as potential zero-day exploits
 
@@ -97,31 +93,8 @@ New Data → VAE → Calculate Reconstruction Error → Compare to Threshold →
 Latent Representations → Clustering Algorithms → Anomaly Groups and Insights
 ```
 
-<p align="center">
-  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMmc2emlwYW41NnFscnM2NDYxOGxjODVyeXc3OHh5NmR6MG9sbXFyYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l46CuOhTeU2X8vFWE/giphy.gif" alt="Clustering Animation" width="400"/>
-</p>
-
 - Applies K-means and DBSCAN clustering to reveal data structure
 - Provides deeper insights into potential anomaly groups
-
-## 📈 Performance Visualization
-
-Our model generates several insightful visualizations:
-
-<div style="display: flex; justify-content: space-between;">
-  <div style="flex: 1; padding: 5px;">
-    <p align="center"><strong>Reconstruction Error Distribution</strong></p>
-    <p align="center"><img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExenFoZXhrYjMwdTEzZDdvZmQ0YXRyYjE0dHc0OTc2N2VubWgwdXE4YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3og0IFrHkIglEOg8Ba/giphy.gif" alt="Reconstruction Error" width="300"/></p>
-  </div>
-  <div style="flex: 1; padding: 5px;">
-    <p align="center"><strong>Anomaly Scores</strong></p>
-    <p align="center"><img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdnAwNnVqZ3pnaWw1a25zbjZyeWFqMTJjb2RheGhydnV3eWl6YmNjcCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3og0ILLVvPp8d64Jd6/giphy.gif" alt="Anomaly Scores" width="300"/></p>
-  </div>
-  <div style="flex: 1; padding: 5px;">
-    <p align="center"><strong>ROC Curve</strong></p>
-    <p align="center"><img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXIwN3ZkcmkxaG81aTN5MDBzMTRyajFrcHhyamFsYzhhMHMwajFnNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7bu3XilJ5BOiSGic/giphy.gif" alt="ROC Curve" width="300"/></p>
-  </div>
-</div>
 
 ## 🛠️ Installation and Setup
 
