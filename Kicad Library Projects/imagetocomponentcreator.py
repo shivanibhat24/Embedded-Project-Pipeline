@@ -1395,8 +1395,6 @@ Keyboard Shortcuts:
 - F1: Show this help
 - Esc: Exit
 
-For more information, visit the documentation at:
-https://github.com/yourusername/kicad-component-generator
 """
         
         dialog = tk.Toplevel(self.root)
