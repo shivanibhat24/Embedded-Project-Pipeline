@@ -9,7 +9,7 @@
   <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjA3MzAyMGlwNHZ0ZDNlcjF1dWw1eGhha2swdjEzMTBpejAyMWc1YiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oKIPEqDGUULpEU0aQ/giphy.gif" alt="Cybersecurity Animation" width="600"/>
 </p>
 
-> *Developed by Team AI_Mavericks: Komal Sali, Parvati Pole, Shivani Bhat, Ibrahim Baramatiwala
+> *Developed by Team AI_Mavericks: Komal Sali, Parvati Pole, Shivani Bhat, Ibrahim Baramatiwala*
 
 ## 🛡️ Project Overview
 
