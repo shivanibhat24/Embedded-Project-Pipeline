@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PicoLogic Analyzer</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2ecc71;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        header {
+            background-color: var(--dark);
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+        }
+
+        header h1 svg {
+            margin-right: 0.5rem;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1rem 0;
+            background-color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #27ae60;
+        }
+
+        select, input {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .canvas-container {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        #waveform-canvas {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ddd;
+            cursor: crosshair;
+        }
+
+        .timeline {
+            height: 30px;
+            position: relative;
+            border: 1px solid #ddd;
+            border-top: none;
+            background-color: #f9f9f9;
+        }
+
+        .channel-labels {
+            width: 100px;
+            float: left;
+        }
+
+        .channel-label {
+            height: 30px;
+            display: flex;
+            align-items: center;
+            padding-left: 0.5rem;
+            font-weight: bold;
+            background-color: #f0f0f0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .channel-value {
+            width: 30px;
+            text-align: center;
+            background-color: var(--light);
+            border-radius: 2px;
+            margin-right: 0.5rem;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .tab.active {
+            border: 1px solid #ddd;
+            border-bottom-color: white;
+            border-radius: 4px 4px 0 0;
+            margin-bottom: -1px;
+            background-color: white;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .tab-content {
+            padding: 1rem;
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .protocol-decoder {
+            margin-top: 1rem;
+            background-color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .decoder-config {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .results-container {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 0.5rem;
+            font-family: monospace;
+            background-color: #f9f9f9;
+        }
+
+        .marker {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background-color: rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+        }
+
+        .marker-label {
+            position: absolute;
+            background-color: var(--dark);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 2px;
+            font-size: 0.8rem;
+            transform: translateX(-50%);
+        }
+
+        .cursor-info {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid #ddd;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            pointer-events: none;
+            z-index: 100;
+            display: none;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem;
+            background-color: #f0f0f0;
+            border-top: 1px solid #ddd;
+            font-size: 0.9rem;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-indicator.active {
+            background-color: var(--secondary);
+        }
+
+        .status-indicator.inactive {
+            background-color: var(--danger);
+        }
+
+        .protocol-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .protocol-table th, .protocol-table td {
+            border: 1px solid #ddd;
+            padding: 0.5rem;
+            text-align: left;
+        }
+
+        .protocol-table th {
+            background-color: #f5f5f5;
+        }
+
+        .protocol-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .event-marker {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 8px solid var(--primary);
+            transform: translateX(-5px);
+            cursor: pointer;
+        }
+
+        .zoom-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .zoom-btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 9h16"></path>
+                    <path d="M4 15h16"></path>
+                    <path d="M10 3L8 21"></path>
+                    <path d="M16 3l-2 18"></path>
+                </svg>
+                PicoLogic Analyzer
+            </h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="controls">
+            <div class="control-group">
+                <label for="sample-rate">Sample Rate</label>
+                <select id="sample-rate">
+                    <option value="1000">1 kHz</option>
+                    <option value="10000">10 kHz</option>
+                    <option value="100000">100 kHz</option>
+                    <option value="1000000" selected>1 MHz</option>
+                    <option value="5000000">5 MHz</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="trigger-channel">Trigger Channel</label>
+                <select id="trigger-channel">
+                    <option value="">None</option>
+                    <option value="0">Channel 0</option>
+                    <option value="1">Channel 1</option>
+                    <option value="2">Channel 2</option>
+                    <option value="3">Channel 3</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="trigger-condition">Trigger Condition</label>
+                <select id="trigger-condition">
+                    <option value="rising">Rising Edge</option>
+                    <option value="falling">Falling Edge</option>
+                    <option value="change">Any Change</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="time-scale">Time Scale</label>
+                <select id="time-scale">
+                    <option value="0.000001">1 μs/div</option>
+                    <option value="0.00001">10 μs/div</option>
+                    <option value="0.0001">100 μs/div</option>
+                    <option value="0.001" selected>1 ms/div</option>
+                    <option value="0.01">10 ms/div</option>
+                    <option value="0.1">100 ms/div</option>
+                    <option value="1">1 s/div</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>&nbsp;</label>
+                <button id="start-capture" class="btn btn-primary">Start Capture</button>
+            </div>
+
+            <div class="control-group">
+                <label>&nbsp;</label>
+                <button id="stop-capture" class="btn btn-danger" disabled>Stop Capture</button>
+            </div>
+
+            <div class="control-group">
+                <label>&nbsp;</label>
+                <button id="download-data" class="btn btn-secondary">Download Data</button>
+            </div>
+        </div>
+
+        <div class="canvas-container">
+            <div id="waveform-display">
+                <div class="channel-labels" id="channel-labels">
+                    <!-- Channel labels will be inserted here -->
+                </div>
+                <div style="overflow: hidden;">
+                    <canvas id="waveform-canvas"></canvas>
+                    <div class="timeline" id="timeline"></div>
+                </div>
+            </div>
+            <div class="zoom-controls">
+                <button class="btn zoom-btn" id="zoom-in">+</button>
+                <button class="btn zoom-btn" id="zoom-out">-</button>
+                <button class="btn zoom-btn" id="zoom-fit">Fit</button>
+            </div>
+            <div class="cursor-info" id="cursor-info"></div>
+            <div class="status-bar">
+                <div>
+                    <span class="status-indicator inactive" id="status-indicator"></span>
+                    <span id="status-text">Stopped</span>
+                </div>
+                <div id="cursor-position">Time: 0.00 ms</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="decoder">Protocol Decoder</div>
+            <div class="tab" data-tab="measurements">Measurements</div>
+            <div class="tab" data-tab="settings">Settings</div>
+        </div>
+
+        <div class="tab-content active" id="decoder-tab">
+            <div class="protocol-decoder">
+                <h3>Protocol Decoder</h3>
+                <div class="decoder-config">
+                    <div class="control-group">
+                        <label for="protocol-type">Protocol</label>
+                        <select id="protocol-type">
+                            <option value="i2c">I²C</option>
+                            <option value="spi">SPI</option>
+                            <option value="uart">UART</option>
+                        </select>
+                    </div>
+
+                    <!-- I2C specific controls -->
+                    <div class="protocol-config" id="i2c-config">
+                        <div class="control-group">
+                            <label for="i2c-scl">SCL Channel</label>
+                            <select id="i2c-scl">
+                                <option value="0">Channel 0</option>
+                                <option value="1">Channel 1</option>
+                                <option value="2">Channel 2</option>
+                                <option value="3">Channel 3</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="i2c-sda">SDA Channel</label>
+                            <select id="i2c-sda">
+                                <option value="0">Channel 0</option>
+                                <option value="1" selected>Channel 1</option>
+                                <option value="2">Channel 2</option>
+                                <option value="3">Channel 3</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- SPI specific controls -->
+                    <div class="protocol-config" id="spi-config" style="display: none;">
+                        <div class="control-group">
+                            <label for="spi-sck">SCK Channel</label>
+                            <select id="spi-sck">
+                                <option value="0">Channel 0</option>
+                                <option value="1">Channel 1</option>
+                                <option value="2">Channel 2</option>
+                                <option value="3">Channel 3</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="spi-mosi">MOSI Channel</label>
+                            <select id="spi-mosi">
+                                <option value="0">Channel 0</option>
+                                <option value="1" selected>Channel 1</option>
+                                <option value="2">Channel 2</option>
+                                <option value="3">Channel 3</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="spi-miso">MISO Channel</label>
+                            <select id="spi-miso">
+                                <option value="0">Channel 0</option>
+                                <option value="1">Channel 1</option>
+                                <option value="2" selected>Channel 2</option>
+                                <option value="3">Channel 3</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="spi-cs">CS Channel</label>
+                            <select id="spi-cs">
+                                <option value="0">Channel 0</option>
+                                <option value="1">Channel 1</option>
+                                <option value="2">Channel 2</option>
+                                <option value="3" selected>Channel 3</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="spi-cpol">CPOL</label>
+                            <select id="spi-cpol">
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="spi-cpha">CPHA</label>
+                            <select id="spi-cpha">
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- UART specific controls -->
+                    <div class="protocol-config" id="uart-config" style="display: none;">
+                        <div class="control-group">
+                            <label for="uart-rx">RX Channel</label>
+                            <select id="uart-rx">
+                                <option value="0">Channel 0</option>
+                                <option value="1" selected>Channel 1</option>
+                                <option value="2">Channel 2</option>
+                                <option value="3">Channel 3</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="uart-baud">Baud Rate</label>
+                            <select id="uart-baud">
+                                <option value="1200">1200</option>
+                                <option value="2400">2400</option>
+                                <option value="4800">4800</option>
+                                <option value="9600" selected>9600</option>
+                                <option value="19200">19200</option>
+                                <option value="38400">38400</option>
+                                <option value="57600">57600</option>
+                                <option value="115200">115200</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="uart-data-bits">Data Bits</label>
+                            <select id="uart-data-bits">
+                                <option value="7">7</option>
+                                <option value="8" selected>8</option>
+                                <option value="9">9</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="uart-parity">Parity</label>
+                            <select id="uart-parity">
+                                <option value="none" selected>None</option>
+                                <option value="even">Even</option>
+                                <option value="odd">Odd</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="uart-stop-bits">Stop Bits</label>
+                            <select id="uart-stop-bits">
+                                <option value="1" selected>1</option>
+                                <option value="1.5">1.5</option>
+                                <option value="2">2</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label>&nbsp;</label>
+                        <button id="decode-button" class="btn btn-primary">Decode</button>
+                    </div>
+                </div>
+
+                <div class="results-container" id="decode-results">
+                    <p>Decode results will appear here.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="measurements-tab">
+            <div class="protocol-decoder">
+                <h3>Measurements</h3>
+                <div class="decoder-config">
+                    <div class="control-group">
+                        <label for="measure-type">Measurement Type</label>
+                        <select id="measure-type">
+                            <option value="frequency">Frequency</option>
+                            <option value="period">Period</option>
+                            <option value="duty-cycle">Duty Cycle</option>
+                            <option value="pulse-width">Pulse Width</option>
+                            <option value="rise-time">Rise Time</option>
+                            <option value="fall-time">Fall Time</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="measure-channel">Channel</label>
+                        <select id="measure-channel">
+                            <option value="0">Channel 0</option>
+                            <option value="1">Channel 1</option>
+                            <option value="2">Channel 2</option>
+                            <option value="3">Channel 3</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label>&nbsp;</label>
+                        <button id="measure-button" class="btn btn-primary">Measure</button>
+                    </div>
+                </div>
+
+                <div class="results-container" id="measure-results">
+                    <p>Measurement results will appear here.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content" id="settings-tab">
+            <div class="protocol-decoder">
+                <h3>Settings</h3>
+                <div class="decoder-config">
+                    <div class="control-group">
+                        <label for="buffer-size">Buffer Size</label>
+                        <select id="buffer-size">
+                            <option value="10000">10K samples</option>
+                            <option value="50000">50K samples</option>
+                            <option value="100000" selected>100K samples</option>
+                            <option value="500000">500K samples</option>
+                            <option value="1000000">1M samples</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="display-mode">Display Mode</label>
+                        <select id="display-mode">
+                            <option value="digital" selected>Digital</option>
+                            <option value="analog">Analog</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="channel-height">Channel Height</label>
+                        <select id="channel-height">
+                            <option value="20">Small</option>
+                            <option value="30" selected>Medium</option>
+                            <option value="40">Large</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>&nbsp;</label>
+                    <button id="save-settings" class="btn btn-primary">Save Settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let ws;
+        const wsUrl = `ws://${window.location.hostname}:${window.location.port || 8765}`;
+        let isCapturing = false;
+        let captureData = [];
+        let channelCount = 4;
+        let channelHeight = 30;
+        let displayOffset = 0;
+        let timeScale = 0.001;
+        let canvas, ctx;
+        let startTime = 0;
+        let endTime = 0;
+        let zoomLevel = 1;
+        let panOffset = 0;
+        let markers = [];
+        let selectedProtocol = 'i2c';
+        let protocolResults = [];
+        let dragging = false;
+        let lastX = 0;
+        
+        // DOM elements
+        const startButton = document.getElementById('start-capture');
+        const stopButton = document.getElementById('stop-capture');
+        const downloadButton = document.getElementById('download-data');
+        const statusIndicator = document.getElementById('status-indicator');
+        const statusText = document.getElementById('status-text');
+        const waveformCanvas = document.getElementById('waveform-canvas');
+        const cursorInfo = document.getElementById('cursor-info');
+        const cursorPosition = document.getElementById('cursor-position');
+        const channelLabelsContainer = document.getElementById('channel-labels');
+        const timeline = document.getElementById('timeline');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const protocolTypeSelect = document.getElementById('protocol-type');
+        const decodeButton = document.getElementById('decode-button');
+        const decodeResults = document.getElementById('decode-results');
+        const protocolConfigs = document.querySelectorAll('.protocol-config');
+        const zoomInButton = document.getElementById('zoom-in');
+        const zoomOutButton = document.getElementById('zoom-out');
+        const zoomFitButton = document.getElementById('zoom-fit');
+        const timeScaleSelect = document.getElementById('time-scale');
+        const measureButton = document.getElementById('measure-button');
+        const measureResults = document.getElementById('measure-results');
+        const saveSettingsButton = document.getElementById('save-settings');
+        const bufferSizeSelect = document.getElementById('buffer-size');
+        const displayModeSelect = document.getElementById('display-mode');
+        const channelHeightSelect = document.getElementById('channel-height');
+        const sampleRateSelect = document.getElementById('sample-rate');
+
+        // Initialize the application
+        function init() {
+            canvas = waveformCanvas;
+            ctx = canvas.getContext('2d');
+            
+            // Set up channel labels
+            setupChannelLabels();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Connect to WebSocket
+            connectWebSocket();
+            
+            // Initial canvas setup
+            resizeCanvas();
+            
+            // Initial render
+            render();
+        }
+
+        // Set up channel labels
+        function setupChannelLabels() {
+            channelLabelsContainer.innerHTML = '';
+            for (let i = 0; i < channelCount; i++) {
+                const label = document.createElement('div');
+                label.className = 'channel-label';
+                label.innerHTML = `<span class="channel-value">CH${i}</span>`;
+                channelLabelsContainer.appendChild(label);
+            }
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Capture control buttons
+            startButton.addEventListener('click', startCapture);
+            stopButton.addEventListener('click', stopCapture);
+            downloadButton.addEventListener('click', downloadData);
+            
+            // Canvas interaction
+            canvas.addEventListener('mousemove', handleMouseMove);
+            canvas.addEventListener('mousedown', handleMouseDown);
+            canvas.addEventListener('mouseup', handleMouseUp);
+            canvas.addEventListener('wheel', handleMouseWheel);
+            
+            // Tabs
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    activateTab(tabId);
+                });
+            });
+            
+            // Protocol decoder
+            protocolTypeSelect.addEventListener('change', function() {
+                selectedProtocol = this.value;
+                showProtocolConfig(selectedProtocol);
+            });
+            
+            decodeButton.addEventListener('click', decodeProtocol);
+            
+            // Zoom controls
+            zoomInButton.addEventListener('click', () => zoomCanvas(1.2));
+            zoomOutButton.addEventListener('click', () => zoomCanvas(0.8));
+            zoomFitButton.addEventListener('click', zoomFit);
+            
+            // Time scale
+            timeScaleSelect.addEventListener('change', function() {
+                timeScale = parseFloat(this.value);
+                render();
+            });
+            
+            // Measurements
+            measureButton.addEventListener('click', performMeasurement);
+            
+            // Settings
+            saveSettingsButton.addEventListener('click', saveSettings);
+            
+            // Window resize
+            window.addEventListener('resize', resizeCanvas);
+        }
+
+        // Connect to WebSocket
+        function connectWebSocket() {
+            if (ws) {
+                ws.close();
+            }
+            
+            ws = new WebSocket(wsUrl);
+            
+            ws.onopen = function() {
+                console.log('Connected to WebSocket server');
+                statusText.textContent = 'Connected';
+            };
+            
+            ws.onmessage = function(event) {
+                const message = JSON.parse(event.data);
+                
+                if (message.status === 'capture_started') {
+                    isCapturing = true;
+                    statusIndicator.classList.remove('inactive');
+                    statusIndicator.classList.add('active');
+                    statusText.textContent = 'Capturing';
+                    startButton.disabled = true;
+                    stopButton.disabled = false;
+                }
+                else if (message.status === 'capture_stopped') {
+                    isCapturing = false;
+                    statusIndicator.classList.remove('active');
+                    statusIndicator.classList.add('inactive');
+                    statusText.textContent = 'Stopped';
+                    startButton.disabled = false;
+                    stopButton.disabled = true;
+                }
+                else if (message.type === 'data') {
+                    captureData = message.data;
+                    
+                    if (captureData.length > 0) {
+                        startTime = captureData[0][0];
+                        endTime = captureData[captureData.length - 1][0];
+                        render();
+                    }
+                }
+                else if (message.type === 'decoded_protocol') {
+                    protocolResults = message.data;
+                    displayProtocolResults(protocolResults);
+                }
+                else if (message.error) {
+                    console.error('Error:', message.error);
+                }
+            };
+            
+            ws.onclose = function() {
+                console.log('Disconnected from WebSocket server');
+                statusText.textContent = 'Disconnected';
+                
+                // Try to reconnect after a delay
+                setTimeout(connectWebSocket, 5000);
+            };
+            
+            ws.onerror = function(error) {
+                console.error('WebSocket error:', error);
+                statusText.textContent = 'Connection Error';
+            };
+        }
+
+        // Start capture
+        function startCapture() {
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    command: 'start_capture',
+                    sample_rate: parseInt(sampleRateSelect.value),
+                    buffer_size: parseInt(bufferSizeSelect.value)
+                }));
+            }
+        }
+
+        // Stop capture
+        function stopCapture() {
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    command: 'stop_capture'
+                }));
+            }
+        }
+
+        // Request data
+        function requestData() {
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    command: 'get_data',
+                    start_time: 0,
+                    end_time: 999999
+                }));
+            }
+        }
+
+        // Download data
+        function downloadData() {
+            if (captureData.length === 0) {
+                alert('No data to download');
+                return;
+            }
+            
+            const csvContent = convertToCSV(captureData);
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'logic_analyzer_data.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Convert data to CSV
+        function convertToCSV(data) {
+            let csvContent = 'Timestamp';
+            for (let i = 0; i < channelCount; i++) {
+                csvContent += `,Channel ${i}`;
+            }
+            csvContent += '\n';
+            
+            for (const [timestamp, values] of data) {
+                csvContent += timestamp;
+                for (const value of values) {
+                    csvContent += `,${value}`;
+                }
+                csvContent += '\n';
+            }
+            
+            return csvContent;
+        }
+
+        // Resize canvas
+        function resizeCanvas() {
+            const containerWidth = canvas.parentElement.clientWidth;
+            canvas.width = containerWidth;
+            canvas.height = channelHeight * channelCount;
+            
+            // Re-render
+            render();
+        }
+
+        // Render the waveform
+        function render() {
+            if (!canvas) return;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw background
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw grid
+            drawGrid();
+            
+            // Draw waveforms
+            drawWaveforms();
+            
+            // Draw markers
+            drawMarkers();
+            
+            // Draw timeline
+            drawTimeline();
+        }
+
+        // Draw grid
+        function drawGrid() {
+            ctx.strokeStyle = '#eee';
+            ctx.lineWidth = 1;
+            
+            // Vertical grid lines (time divisions)
+            const timeDiv = timeScale;
+            const pixelsPerSecond = canvas.width / (timeScale * 10);
+            
+            for (let i = 0; i <= 10; i++) {
+                const x = i * canvas.width / 10;
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            
+            // Horizontal grid lines (channel divisions)
+            for (let i = 0; i <= channelCount; i++) {
+                const y = i * channelHeight;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+        }
+
+        // Draw waveforms
+        function drawWaveforms() {
+            if (captureData.length === 0) return;
+            
+            const displayTime = timeScale * 10;
+            const viewStartTime = startTime + panOffset;
+            const viewEndTime = viewStartTime + displayTime / zoomLevel;
+            
+            // Find the data points within the view
+            const viewData = captureData.filter(([time, _]) => time >= viewStartTime && time <= viewEndTime);
+            
+            if (viewData.length === 0) return;
+            
+            const pixelsPerSecond = canvas.width / (displayTime / zoomLevel);
+            
+            // Draw each channel
+            for (let ch = 0; ch < channelCount; ch++) {
+                const yOffset = ch * channelHeight;
+                const yHigh = yOffset + channelHeight * 0.2;
+                const yLow = yOffset + channelHeight * 0.8;
+                
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                
+                let lastX = 0;
+                let lastY = viewData[0][1][ch] ? yHigh : yLow;
+                
+                for (let i = 0; i < viewData.length; i++) {
+                    const [time, values] = viewData[i];
+                    const x = (time - viewStartTime) * pixelsPerSecond;
+                    const y = values[ch] ? yHigh : yLow;
+                    
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        // Create vertical line for transitions
+                        if (lastY !== y) {
+                            ctx.lineTo(x, lastY);
+                            ctx.lineTo(x, y);
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                    }
+                    
+                    lastX = x;
+                    lastY = y;
+                }
+                
+                // Extend the last value to the end of the view
+                ctx.lineTo(canvas.width, lastY);
+                ctx.stroke();
+            }
+        }
+
+        // Draw markers
+        function drawMarkers() {
+            markers.forEach((marker, index) => {
+                const x = marker.x;
+                
+                // Draw marker line
+                ctx.strokeStyle = marker.color || '#ff0000';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+                
+                // Draw marker label
+                ctx.fillStyle = marker.color || '#ff0000';
+                ctx.fillText(marker.label || `M${index+1}`, x + 5, 15);
+            });
+        }
+
+        // Draw timeline
+    function drawTimeline() {
+        const timelineCtx = timeline.getContext('2d');
+        
+        timeline.width = canvas.width;
+        timeline.height = 30;
+        
+        timelineCtx.clearRect(0, 0, timeline.width, timeline.height);
+        timelineCtx.fillStyle = '#f9f9f9';
+        timelineCtx.fillRect(0, 0, timeline.width, timeline.height);
+        
+        const displayTime = timeScale * 10;
+        const viewStartTime = startTime + panOffset;
+        const viewEndTime = viewStartTime + displayTime / zoomLevel;
+        
+        timelineCtx.strokeStyle = '#ccc';
+        timelineCtx.fillStyle = '#666';
+        timelineCtx.font = '10px Arial';
+        timelineCtx.textAlign = 'center';
+        
+        // Draw tick marks and labels
+        for (let i = 0; i <= 10; i++) {
+            const x = i * timeline.width / 10;
+            const time = viewStartTime + (i * displayTime / zoomLevel / 10);
+            
+            timelineCtx.beginPath();
+            timelineCtx.moveTo(x, 0);
+            timelineCtx.lineTo(x, 10);
+            timelineCtx.stroke();
+            
+            // Format time based on scale
+            let timeStr;
+            if (time < 0.000001) {
+                timeStr = (time * 1000000000).toFixed(2) + ' ns';
+            } else if (time < 0.001) {
+                timeStr = (time * 1000000).toFixed(2) + ' μs';
+            } else if (time < 1) {
+                timeStr = (time * 1000).toFixed(2) + ' ms';
+            } else {
+                timeStr = time.toFixed(2) + ' s';
+            }
+            
+            timelineCtx.fillText(timeStr, x, 25);
+        }
+    }
+
+    // Handle mouse move event
+    function handleMouseMove(e) {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // Calculate time at cursor position
+        const displayTime = timeScale * 10;
+        const viewStartTime = startTime + panOffset;
+        const time = viewStartTime + (x / canvas.width) * (displayTime / zoomLevel);
+        
+        // Format time
+        let timeStr;
+        if (time < 0.000001) {
+            timeStr = (time * 1000000000).toFixed(2) + ' ns';
+        } else if (time < 0.001) {
+            timeStr = (time * 1000000).toFixed(2) + ' μs';
+        } else if (time < 1) {
+            timeStr = (time * 1000).toFixed(2) + ' ms';
+        } else {
+            timeStr = time.toFixed(2) + ' s';
+        }
+        
+        // Update cursor position display
+        cursorPosition.textContent = `Time: ${timeStr}`;
+        
+        // Show cursor info
+        cursorInfo.style.display = 'block';
+        cursorInfo.style.left = (e.clientX + 10) + 'px';
+        cursorInfo.style.top = (e.clientY + 10) + 'px';
+        
+        // Get channel value at cursor position
+        const channel = Math.floor(y / channelHeight);
+        if (channel >= 0 && channel < channelCount) {
+            // Find closest data point
+            let value = null;
+            if (captureData.length > 0) {
+                const closest = captureData.reduce((prev, curr) => {
+                    return (Math.abs(curr[0] - time) < Math.abs(prev[0] - time) ? curr : prev);
+                });
+                value = closest[1][channel];
+            }
+            
+            cursorInfo.textContent = `CH${channel}: ${value !== null ? value : 'N/A'}\nTime: ${timeStr}`;
+        }
+        
+        // Handle dragging for pan
+        if (dragging) {
+            const dx = e.clientX - lastX;
+            lastX = e.clientX;
+            
+            // Convert pixels to time
+            const timeDelta = (dx / canvas.width) * (displayTime / zoomLevel);
+            panOffset -= timeDelta;
+            
+            // Limit panning
+            const maxPan = endTime - startTime - (displayTime / zoomLevel);
+            panOffset = Math.max(0, Math.min(panOffset, maxPan));
+            
+            render();
+        }
+    }
+
+    // Handle mouse down event
+    function handleMouseDown(e) {
+        const rect = canvas.getBoundingClientRect();
+        lastX = e.clientX;
+        dragging = true;
+        canvas.style.cursor = 'grabbing';
+    }
+
+    // Handle mouse up event
+    function handleMouseUp(e) {
+        dragging = false;
+        canvas.style.cursor = 'default';
+    }
+
+    // Handle mouse wheel event for zooming
+    function handleMouseWheel(e) {
+        e.preventDefault();
+        
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        
+        // Calculate the time at the cursor position
+        const displayTime = timeScale * 10;
+        const viewStartTime = startTime + panOffset;
+        const timeAtCursor = viewStartTime + (x / canvas.width) * (displayTime / zoomLevel);
+        
+        // Zoom in or out
+        const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+        zoomLevel *= zoomFactor;
+        
+        // Limit zoom level
+        zoomLevel = Math.max(0.1, Math.min(zoomLevel, 100));
+        
+        // Adjust pan offset to keep the time under cursor fixed
+        const newDisplayTime = displayTime / zoomLevel;
+        const newTimeAtX = viewStartTime + (x / canvas.width) * newDisplayTime;
+        panOffset += (timeAtCursor - newTimeAtX);
+        
+        // Limit panning
+        const maxPan = endTime - startTime - newDisplayTime;
+        panOffset = Math.max(0, Math.min(panOffset, maxPan));
+        
+        render();
+    }
+
+    // Zoom canvas programmatically
+    function zoomCanvas(factor) {
+        zoomLevel *= factor;
+        zoomLevel = Math.max(0.1, Math.min(zoomLevel, 100));
+        render();
+    }
+
+    // Zoom to fit all data
+    function zoomFit() {
+        if (captureData.length === 0) return;
+        
+        zoomLevel = 1;
+        panOffset = 0;
+        render();
+    }
+
+    // Show protocol configuration for selected protocol
+    function showProtocolConfig(protocol) {
+        protocolConfigs.forEach(config => {
+            config.style.display = 'none';
+        });
+        
+        const configId = `${protocol}-config`;
+        const config = document.getElementById(configId);
+        if (config) {
+            config.style.display = 'flex';
+        }
+    }
+
+    // Decode protocol
+    function decodeProtocol() {
+        if (captureData.length === 0) {
+            alert('No data to decode');
+            return;
+        }
+        
+        const protocol = protocolTypeSelect.value;
+        let config = {};
+        
+        if (protocol === 'i2c') {
+            config = {
+                scl_channel: parseInt(document.getElementById('i2c-scl').value),
+                sda_channel: parseInt(document.getElementById('i2c-sda').value)
+            };
+        } else if (protocol === 'spi') {
+            config = {
+                sck_channel: parseInt(document.getElementById('spi-sck').value),
+                mosi_channel: parseInt(document.getElementById('spi-mosi').value),
+                miso_channel: parseInt(document.getElementById('spi-miso').value),
+                cs_channel: parseInt(document.getElementById('spi-cs').value),
+                cpol: parseInt(document.getElementById('spi-cpol').value),
+                cpha: parseInt(document.getElementById('spi-cpha').value)
+            };
+        } else if (protocol === 'uart') {
+            config = {
+                rx_channel: parseInt(document.getElementById('uart-rx').value),
+                baud_rate: parseInt(document.getElementById('uart-baud').value),
+                data_bits: parseInt(document.getElementById('uart-data-bits').value),
+                parity: document.getElementById('uart-parity').value,
+                stop_bits: parseFloat(document.getElementById('uart-stop-bits').value)
+            };
+        }
+        
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({
+                command: 'decode_protocol',
+                protocol: protocol,
+                config: config,
+                data: captureData
+            }));
+        }
+    }
+
+    // Perform measurement
+    function performMeasurement() {
+        if (captureData.length === 0) {
+            alert('No data to measure');
+            return;
+        }
+        
+        const measureType = document.getElementById('measure-type').value;
+        const channel = parseInt(document.getElementById('measure-channel').value);
+        
+        // Find transitions in the data for the selected channel
+        const transitions = [];
+        let lastValue = null;
+        
+        for (const [time, values] of captureData) {
+            const value = values[channel];
+            if (lastValue !== null && lastValue !== value) {
+                transitions.push({
+                    time: time,
+                    rising: value === 1
+                });
+            }
+            lastValue = value;
+        }
+        
+        let result = '';
+        
+        if (transitions.length === 0) {
+            result = 'No transitions detected in the selected channel.';
+        } else {
+            switch (measureType) {
+                case 'frequency':
+                    // Calculate average frequency
+                    const periods = [];
+                    let lastRisingEdge = null;
+                    
+                    for (const transition of transitions) {
+                        if (transition.rising) {
+                            if (lastRisingEdge !== null) {
+                                periods.push(transition.time - lastRisingEdge);
+                            }
+                            lastRisingEdge = transition.time;
+                        }
+                    }
+                    
+                    if (periods.length > 0) {
+                        const avgPeriod = periods.reduce((sum, period) => sum + period, 0) / periods.length;
+                        const freq = 1 / avgPeriod;
+                        
+                        // Format frequency
+                        let freqStr;
+                        if (freq >= 1000000) {
+                            freqStr = (freq / 1000000).toFixed(2) + ' MHz';
+                        } else if (freq >= 1000) {
+                            freqStr = (freq / 1000).toFixed(2) + ' kHz';
+                        } else {
+                            freqStr = freq.toFixed(2) + ' Hz';
+                        }
+                        
+                        result = `Frequency: ${freqStr}`;
+                    } else {
+                        result = 'Not enough rising edges to calculate frequency.';
+                    }
+                    break;
+                    
+                case 'period':
+                    // Similar to frequency but report the period directly
+                    const periodsMeasure = [];
+                    let lastRisingEdgePeriod = null;
+                    
+                    for (const transition of transitions) {
+                        if (transition.rising) {
+                            if (lastRisingEdgePeriod !== null) {
+                                periodsMeasure.push(transition.time - lastRisingEdgePeriod);
+                            }
+                            lastRisingEdgePeriod = transition.time;
+                        }
+                    }
+                    
+                    if (periodsMeasure.length > 0) {
+                        const avgPeriod = periodsMeasure.reduce((sum, period) => sum + period, 0) / periodsMeasure.length;
+                        
+                        // Format period
+                        let periodStr;
+                        if (avgPeriod < 0.000001) {
+                            periodStr = (avgPeriod * 1000000000).toFixed(2) + ' ns';
+                        } else if (avgPeriod < 0.001) {
+                            periodStr = (avgPeriod * 1000000).toFixed(2) + ' μs';
+                        } else if (avgPeriod < 1) {
+                            periodStr = (avgPeriod * 1000).toFixed(2) + ' ms';
+                        } else {
+                            periodStr = avgPeriod.toFixed(2) + ' s';
+                        }
+                        
+                        result = `Period: ${periodStr}`;
+                    } else {
+                        result = 'Not enough rising edges to calculate period.';
+                    }
+                    break;
+                    
+                case 'duty-cycle':
+                    // Calculate high time vs. total period
+                    const cycles = [];
+                    let highStartTime = null;
+                    let cycleStartTime = null;
+                    let highTime = 0;
+                    let cycleTime = 0;
+                    
+                    for (const [time, values] of captureData) {
+                        const value = values[channel];
+                        
+                        if (value === 1 && highStartTime === null) {
+                            // Rising edge
+                            highStartTime = time;
+                            if (cycleStartTime === null) {
+                                cycleStartTime = time;
+                            }
+                        } else if (value === 0 && highStartTime !== null) {
+                            // Falling edge
+                            highTime += (time - highStartTime);
+                            highStartTime = null;
+                        }
+                        
+                        if (value === 1 && cycleStartTime !== null && time > cycleStartTime) {
+                            // Complete cycle
+                            cycleTime = time - cycleStartTime;
+                            if (cycleTime > 0) {
+                                cycles.push(highTime / cycleTime * 100);
+                            }
+                            cycleStartTime = time;
+                            highTime = 0;
+                        }
+                    }
+                    
+                    if (cycles.length > 0) {
+                        const avgDutyCycle = cycles.reduce((sum, dc) => sum + dc, 0) / cycles.length;
+                        result = `Duty Cycle: ${avgDutyCycle.toFixed(2)}%`;
+                    } else {
+                        result = 'Not enough complete cycles to calculate duty cycle.';
+                    }
+                    break;
+                
+                // Additional measurement types would be implemented here
+                
+                default:
+                    result = 'Measurement type not implemented.';
+                    break;
+            }
+        }
+        
+        measureResults.innerHTML = `<p>${result}</p>`;
+    }
+
+    // Display protocol decoding results
+    function displayProtocolResults(results) {
+        if (results.length === 0) {
+            decodeResults.innerHTML = '<p>No protocol data detected.</p>';
+            return;
+        }
+        
+        let html = '<table class="protocol-table">';
+        html += '<thead><tr><th>Time</th><th>Type</th><th>Data</th><th>Details</th></tr></thead><tbody>';
+        
+        for (const result of results) {
+            let timeStr;
+            if (result.time < 0.000001) {
+                timeStr = (result.time * 1000000000).toFixed(2) + ' ns';
+            } else if (result.time < 0.001) {
+                timeStr = (result.time * 1000000).toFixed(2) + ' μs';
+            } else if (result.time < 1) {
+                timeStr = (result.time * 1000).toFixed(2) + ' ms';
+            } else {
+                timeStr = result.time.toFixed(2) + ' s';
+            }
+            
+            html += `<tr>
+                <td>${timeStr}</td>
+                <td>${result.type}</td>
+                <td>${result.data}</td>
+                <td>${result.details || ''}</td>
+            </tr>`;
+            
+            // Add a marker at this event
+            addEventMarker(result.time, result.type);
+        }
+        
+        html += '</tbody></table>';
+        decodeResults.innerHTML = html;
+    }
+
+    // Add event marker
+    function addEventMarker(time, label) {
+        const displayTime = timeScale * 10;
+        const viewStartTime = startTime + panOffset;
+        const pixelsPerSecond = canvas.width / (displayTime / zoomLevel);
+        const x = (time - viewStartTime) * pixelsPerSecond;
+        
+        if (x >= 0 && x <= canvas.width) {
+            const marker = document.createElement('div');
+            marker.className = 'event-marker';
+            marker.style.left = x + 'px';
+            marker.title = label;
+            
+            const markerLabel = document.createElement('div');
+            markerLabel.className = 'marker-label';
+            markerLabel.style.left = x + 'px';
+            markerLabel.textContent = label;
+            
+            timeline.appendChild(marker);
+            timeline.appendChild(markerLabel);
+        }
+    }
+
+    // Activate tab
+    function activateTab(tabId) {
+        tabs.forEach(tab => {
+            if (tab.getAttribute('data-tab') === tabId) {
+                tab.classList.add('active');
+            } else {
+                tab.classList.remove('active');
+            }
+        });
+        
+        tabContents.forEach(content => {
+            if (content.id === tabId + '-tab') {
+                content.classList.add('active');
+            } else {
+                content.classList.remove('active');
+            }
+        });
+    }
+
+    // Save settings
+    function saveSettings() {
+        channelHeight = parseInt(channelHeightSelect.value);
+        
+        // Apply settings
+        setupChannelLabels();
+        resizeCanvas();
+        render();
+        
+        alert('Settings saved');
+    }
+
+    // Initialize application
+    init();
+});
+</script>
+</body>
+</html>
