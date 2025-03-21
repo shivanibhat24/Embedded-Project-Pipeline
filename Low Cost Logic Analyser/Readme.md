@@ -267,4 +267,4 @@ Contributions are welcome! Feel free to submit issues, feature requests, or pull
 
 ## Credits
 
-PicoLogic was developed by [Your Name/Organization] to provide an accessible logic analyzer solution for makers, hobbyists, and educators.
+PicoLogic was developed by eme to provide an accessible logic analyzer solution for makers, hobbyists, and educators.
