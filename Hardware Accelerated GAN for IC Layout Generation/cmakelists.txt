@@ -1,0 +1,29 @@
+cmake_minimum_required(VERSION 3.10)
+project(ChipGANIntegration)
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Find TensorFlow package
+find_package(TensorFlow REQUIRED)
+
+# If TensorFlow is not found by find_package, specify paths manually
+if(NOT TensorFlow_FOUND)
+    set(TensorFlow_INCLUDE_DIRS /usr/local/include/tensorflow/c)
+    set(TensorFlow_LIBRARIES /usr/local/lib/libtensorflow.so /usr/local/lib/libtensorflow_framework.so)
+endif()
+
+# Add include directories
+include_directories(${TensorFlow_INCLUDE_DIRS})
+
+# Create executable
+add_executable(chip_gan_integration tf_cpp_integration.cpp)
+
+# Link TensorFlow libraries
+target_link_libraries(chip_gan_integration ${TensorFlow_LIBRARIES})
+
+# Add compiler flags
+target_compile_options(chip_gan_integration PRIVATE -Wall -Wextra -O3)
+
+# Install target
+install(TARGETS chip_gan_integration DESTINATION bin)
