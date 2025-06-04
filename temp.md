@@ -46,10 +46,6 @@ Zero-day exploits represent one of the most critical threats in cybersecurity as
 
 The solution leverages the **UNSW-NB15 dataset**, a comprehensive collection designed for network intrusion detection research. It contains a diverse mixture of benign and malicious network traffic that simulates real-world cyber attack scenarios.
 
-<p align="center">
-  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaXRtNmljbnNsaTVkYXNsNzdxYzVpMnZtbXZrN3cwcWQzbGt4OXJlYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oKIPEqDGUULpEU0aQ/giphy.gif" alt="Data Processing" width="450"/>
-</p>
-
 ## 🚀 How It Works
 
 ### 1. Data Preprocessing
