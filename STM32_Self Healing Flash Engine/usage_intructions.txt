@@ -1,0 +1,42 @@
+1. Hardware Setup:
+   - Connect STM32 Nucleo F411RE to PC via USB
+   - LED on PA5 will indicate system activity
+   - User button on PC13 for manual triggers (if needed)
+   - UART2 (PA2/PA3) connected via ST-Link for logging
+
+2. Software Setup:
+   - Import project into STM32CubeIDE
+   - Ensure HAL and LL drivers are included
+   - Build and flash to the board
+
+3. Operation:
+   - System boots and initializes flash integrity engine
+   - Continuously monitors flash blocks every 5 seconds
+   - Logs status via UART (115200 baud)
+   - Automatically repairs corrupted blocks from backup area
+   - LED toggles to indicate activity
+
+4. Testing Corruption:
+   - Use debugger to manually corrupt flash areas
+   - Observe automatic detection and repair
+   - Monitor UART output for detailed status
+
+5. Flash Memory Layout:
+   - 0x08000000-0x08020000: Bootloader/main firmware
+   - 0x08020000-0x08040000: Primary data blocks (8x16KB)
+   - 0x08040000-0x08060000: Backup data blocks (8x16KB)
+   - 0x08060000-0x08070000: CRC lookup table
+   - 0x08070000-0x08080000: Status logs
+
+======================== Key Features ========================
+
+✓ Modular architecture with clear separation of concerns
+✓ HAL APIs for system initialization and CRC operations
+✓ LL APIs for direct flash memory control
+✓ Safe flash operations with proper unlock/lock sequences
+✓ Comprehensive error handling and status reporting
+✓ UART logging for real-time monitoring
+✓ Configurable block sizes and counts
+✓ Self-contained operation using only onboard resources
+✓ Compatible with STM32CubeIDE workflow
+✓ Production-ready code structure
