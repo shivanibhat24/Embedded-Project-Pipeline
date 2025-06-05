@@ -1,0 +1,23 @@
+Project Setup Instructions:
+1. Create new STM32 project in STM32CubeIDE
+2. Select STM32F411RE (Nucleo board)
+3. Enable peripherals in CubeMX:
+   - CRC: Enable with default settings
+   - USART2: Asynchronous mode, 115200 baud
+   - GPIO: PA5 as output (LED), PC13 as input (button)
+4. Generate code and replace main.c with the above implementation
+
+Linker Script Modifications (STM32F411RETX_FLASH.ld):
+Add these sections for flash management:
+
+  .user_data (NOLOAD) : {
+    . = ALIGN(4);
+    *(.user_data)
+    . = ALIGN(4);
+  } >FLASH
+  
+  .backup_data (NOLOAD) : {
+    . = ALIGN(4);
+    *(.backup_data)
+    . = ALIGN(4);
+  } >FLASH
